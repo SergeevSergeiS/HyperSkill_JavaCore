@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.File;
 import java.io.PrintWriter;
 
+// Класс, считывающию информацию из файла
 class Input {
     String data;
     public Input(String task) {
@@ -19,6 +20,7 @@ class Input {
     }
 }
 
+// Класс, разбивающий переданные аргументы на переменные
 class Parser {
     boolean fromFile;
     String operation;
@@ -52,6 +54,7 @@ class Parser {
     }
 }
 
+//Абстрактный класс для задания и сдвига
 abstract class Text {
     String task;
     int step;
@@ -64,6 +67,7 @@ abstract class Text {
     abstract String encrypted();
 }
 
+//Реализация алгоритма Shift
 class ShiftedText extends Text {
     public ShiftedText(String task, int step) {
         super(task, step);
@@ -88,6 +92,7 @@ class ShiftedText extends Text {
     }
 }
 
+//Реализация алгоритма Unicode
 class UnicodedText extends Text {
     public UnicodedText(String task, int step) {
         super(task, step);
@@ -105,6 +110,7 @@ class UnicodedText extends Text {
     }
 }
 
+// Factory method
 class TextFactory {
     public static Text encrypt(String task, String algorithm, int step) {
         switch (algorithm) {
@@ -118,6 +124,7 @@ class TextFactory {
     }
 }
 
+// Класс для записи в файл/вывода на экран
 class Output {
     static String text;
 
