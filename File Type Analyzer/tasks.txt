@@ -1,0 +1,106 @@
+Stage 1/5: Is this a PDF?
+
+Description
+In this project, you will learn how to make a tool for determining file type. It's not like determining file type based on the extension of the file; the filename can be random. Actually, many file types contain special byte sequences that make it easy to determine them. You’ll start from a simple program that can only search for an occurrence of the specific pattern inside a single file and gradually turn it into a more practical solution that can check hundreds and thousands of files against a huge pattern set. Each pattern has information about a file type which will be reported to the user when there is a successful match.
+
+This approach is widely used in many different applications. For example, the Unix “file” tool relies on a sophisticated “magic” database (it consists of a pattern set written in a specific language), antivirus and malware-detection tools search the malicious signatures inside user’s files, and firewalls do the same with a system’s network traffic (as well as DPI systems).
+
+Let’s begin with an elementary prototype of our file type checker. Write a program that accepts a pattern and its file type and matches the pattern against some file.
+
+Here we deﬁne pattern as a pair of two strings: {P, R}, where P is a pattern itself and R is a resulting ﬁle type which corresponds to pattern P. If the string P is found in the ﬁle then your program should return R as ﬁle type. For example, for the following pattern
+
+ {"%PDF-", "PDF document"} 
+the program will search for a "%PDF-" in a ﬁle’s binary data and if found successfully will determine ﬁle type as "PDF document". Note that the pattern can be anywhere in the file, not just at the start of the file. You can see here in the row with "Magic number" there is the "%PDF" pattern, but actually after this pattern, the "-" symbol always appears, so the pattern described above is stricter.
+
+You can use this link to see how to open a file in binary.
+
+Write a program that accepts a ﬁle name and pattern and searches for an occurrence of the pattern in this ﬁle. If the pattern matched at least once the program should report its type. If there were no matches, print “Unknown ﬁle type”.
+
+Your program should accept three arguments: the file to check (relative path), the pattern string (P), and the result string (R).
+
+Examples
+The examples below show how your output might look.
+
+java Main doc.pdf "%PDF-" "PDF document"
+PDF document
+java Main picture.jpg "%PDF-" "PDF document"
+Unknown file type
+
+Stage 2/5: KMP algorithm
+
+Description
+Improve your file type checker’s pattern match logic by rewriting the pattern search algorithm. Use some of the advanced algorithms you have learned so far like the Knuth-Morris-Pratt algorithm. Check your program’s search performance with some huge file. Compare your improved search engine with a naive implementation. If you’re a Linux user, you can use "time" for measuring execution time, (see man time for details). Otherwise, you can use nanoTime() from the java.lang.System class. Check the official documentation.
+
+Your program should accept another argument, that represents an algorithm, a naive implementation that you've implemented in the previous step marked as --naive and KMP algorithm marked as --KMP. Other arguments (file name, pattern and file type) should be parsed after this one.
+
+Examples
+First, we've checked the naive implementation, and it took roughly 5 seconds. Then KMP showed 5 times better performance. You should expect similar behavior from your program.
+
+java Main --naive huge_doc.pdf "%PDF-" "PDF document"
+PDF document
+It took 5.011 seconds
+java Main --KMP huge_doc.pdf "%PDF-" "PDF document"
+PDF document
+It took 1.037 seconds
+java Main --naive pic.png "%PDF-" "PDF document"
+Unknown file type
+It took 3.641 seconds
+java Main --KMP pic.png "%PDF-" "PDF document"
+Unknown file type
+It took 0.469 seconds
+
+Stage 3/5: Wanted!
+
+Description
+Let’s make another improvement. The pattern search engine is pretty fast now. However, if we want to check multiple files we should pass them to the checker one by one and match them consequently. Parallelize your checker to handle multiple files.
+
+Now your search engine must deal with multiple files. Hint: your program can be organized as several workers. Each worker is equivalent (logically) to the single-threaded pattern matcher: it takes several files and matches them consequently using the searching algorithm. The answers of each worker will be aggregated as the total execution result.
+
+Your program should accept two strings: P and R as the first two arguments. P and R represent the pattern to check. Then it should take a folder’s path which contains all of the files to be checked by your program.
+
+For this stage, you should use only the KMP algorithm.
+
+Examples
+java Main test_files "-----BEGIN\ CERTIFICATE-----" "PEM certificate"
+file.pem: PEM certificate
+doc_1.docx: Unknown file type
+doc_2.pdf: Unknown file type
+java Main test_files "%PDF-" "PDF document"
+file.pem: Unknown file type
+doc_1.docx: Unknown file type
+doc_2.pdf: PDF document
+
+Stage 4/5: A question of priorities
+
+Description
+It is almost useless to have a pattern base with only one pattern. There should be more. We can take patterns one by one from some storage and match them until we find a successful match. But what should we do if several patterns match successfully?
+
+Extend your program to make it match several patterns against each file. Implement some prioritizing scheme for patterns to prevent ambiguity in case of multiple matches.
+
+The patterns.db consist of patterns with their priorities. You can download it here. For example:
+
+4;"PK";"Zip archive"
+7;"word/_rels";"MS Office Word 2007+"
+7;"ppt/_rels";"MS Office PowerPoint 2007+"
+7;"xl/_rels";"MS Office Excel 2007+"
+A higher value means higher priority. In this example, the "Zip archive" is a container for multiple files. However, Microsoft Office files are also stored as Zip archives, you can clearly see this if you rename file "file.docx" to "file.zip". If you unzip it, you'll see that it contains a bunch of folders and a bunch of XMLs. So, a Word file contains both "PK" indicating that this is a Zip archive and "word/_rels" indicating that this is a Word document. In this situation, you should choose a pattern with higher priority, which is "MS Office Word 2007+".
+
+While developing your program you can use the attached file. It contains some patterns with different priorities sorted by their "accuracy" (for example, MS Office 2007 documents store their data inside a zip archive, so the pattern for Office documents should be "stronger" than that for zip archive).
+
+Example
+java Main test_files patterns.db
+test_filesdoc_0.doc: MS Office Word 2003
+doc_1.ppt: MS Office PowerPoint 2003
+file.zip: Zip archive
+
+Stage 5/5: Rabin-Karp
+
+Description
+The sequential pattern match is a serious bottleneck even if we use an advanced single pattern searching algorithm. Use the Rabin-Karp algorithm to make a multiple pattern matcher and make your checker show the best performance.
+
+Example
+java Main test_files patterns.db
+doc_0.doc: MS Office Word 2003
+doc_1.pptx: MS Office PowerPoint 2007+
+doc_2.pdf: PDF document
+file.pem: PEM certificate
