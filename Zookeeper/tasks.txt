@@ -43,6 +43,8 @@ End with the following phrase:
 ---
 You've reached the end of the program. To check another habitat, please restart the watcher.
 
+Stage 4/4: Sustainable care <3
+
 Description
 Now it's time to make our project user-friendly. In this final stage, you'll make your software ready for the zoo staff to use. Your program should understand the habitat numbers, show the animals, and be able to work continuously without having to be restarted.
 
