@@ -1,0 +1,165 @@
+Don't forget to add
+dependencies {
+    implementation 'com.google.code.gson:gson:2.8.5'
+}
+to your build.gradle for stage 3+!
+
+Stage 1/6: One-line metro
+
+Description
+Imagine you work for the metro system and your task is to develop a program that displays all the stations of the current line. At this point, let's assume that the metro has only one line.
+
+The stations were built one by one, which is similar to a data structure called a linked list. At first sight, a linked list seems very similar to an array, but it actually has some important advantages over arrays. For example, the array length is fixed, so when you add a new element, a new memory area is allocated for the modified array, which isn't good for the program performance. In a linked list, on the other hand, the elements are scattered throughout the memory and connected to each other by special links.
+
+In this stage, we will use a singly-linked list. In this data structure, each element of the list stores its data together with a pointer to the next element. Basically, the first element is a "head" and the last one is a "tail". The "tail" element stores a pointer to null, which signifies the end of the linked list.
+
+Objective
+You have a simple text file with the information about the names of the stations. The path to the file is specified by the command line argument. Your program should read the file, generate a singly-linked list of the stations, and print them like this:
+
+depot - Station 1 - Station 2
+Station 1 - Station 2 - Station 3
+Station 2 - Station 3 - Station 4
+...
+Station (n-1) - Station n - depot
+The end of the linked list is the depot.
+
+If the file is empty, do not print anything, and if the path to the file is invalid, print an error message Error! Such a file doesn't exist!.
+
+Stage 2/6: Several directions
+
+Description
+It's time to expand our metro! To provide the citizens with more efficient transportation, we will extend our existing metro line and start a new one. Since now we will have several lines, there should be a possibility to choose which one to use. Also, let's not forget that trains go both directions (except for the end stations). In this case, it makes sense to use a linked list with access to the previous element: a doubly-linked list. Its main feature, as you might have guessed, is that each element stores pointers to both the previous and the next element.
+
+Since the file stores not just one metro line but two, it is easier to organize the data by splitting it up between the two lines. In this case, we use a JSON file. It is a popular data-interchange format consisting of a map, where a key is a string type and a value can be any type. A key is separated from a value by a colon, and different key-value pairs are separated by a comma. You can find a comprehensive JSON tutorial at qhmit.com. By default, Java has no functionality to work with the JSON format, but Google made a special library GSON, which you can use in this project: see zetcode.com for more information on GSON.
+
+Objective
+Switch to using a JSON file instead of a simple text file.
+Add new stations in the given order:
+{
+    "line 1": {
+        "3": "station3",
+        "1": "station 1",
+        "2": "station 2"
+    },
+    "line 2": {
+        "2": "station 2",
+        "1": "station 1"
+    }
+}
+The program should have the following commands: /append "[line name]" "[station name]", /add-head "[line name]" "[station name]", and /remove "[line name]" "[station name]". Append adds a new station at the end of the line, while add-head adds a new station at the beginning. Note that if the name of the line or station consists of several words, you should write it in quotation marks (after, they should be excluded from the name). If the name of a station consists of one word it should be parseable with or without quotes.
+The program should print a line that has been chosen with the command /output "[line name]".
+The program should handle incorrect format of the file records and output the message Incorrect file.
+Also, your program should handle incorrect format of the command and print the message Invalid command.
+If the path to the file is invalid, print an error message Error! Such a file doesn't exist!.
+Add a special command /exit to finish the work of the program.
+
+Stage 3/6: A real metro
+
+Description
+Our metro is growing, and now it is time to combine the different lines into a single underground system. In places where the lines connect, there are large interchange stations where people can cross from one line to another. Our program should store such interchange stations and which line they connect to.
+
+In order to store this kind of data, we need to add a new field to the item class which is a pointer to another station (to store several stations, it should be an array). This upgrade will allow us to connect the lines and make the metro a more advanced system.
+
+A corresponding field has to be added to the JSON file, as well. Its name is "transfer" and its value is either the name of the line and the station, or null if there are no transfer stations.
+
+Objective
+Add the ability to read transfer the stations from a JSON file:
+{
+    "Metro-Railway": {
+        "3": {
+            "name": "Baker street",
+            "transfer": [{
+                "line": "Hammersmith-and-City",
+                "station": "Baker street"
+            }]
+        },
+        "1": {
+            "name": "Bishops-road",
+            "transfer": []
+        },
+        "2": {
+            "name": "Edgver road",
+            "transfer": []
+        }
+    },
+    "Hammersmith-and-City": {
+        "2": {
+            "name": "Westbourne-park",
+            "transfer": []
+        },
+        "1": {
+            "name": "Hammersmith",
+            "transfer": []
+        },
+        "3": {
+            "name": "Baker street",
+            "transfer": [{
+                "line": "Metro-Railway",
+                "station": "Baker street"
+            }]
+        }
+    }
+}
+Connect the stations using the command /connect "[line 1]" "[station 1]" "[line 2]" "[station 2]".
+The program should print the name of the connected station.
+For your updated metro map, you may use the real stations of Prague Metro. Don't forget to get the file with the station names!
+
+Stage 4/6: The shortest route
+
+Description
+Now that our metro has gotten big, the passengers are finding it difficult to find their way around it. Your task is to create an application that can pave the route from one station to another, displaying all the necessary stations and transitions. The application must also find the path from one point to another so that people don't have to be stuck underground for too long.
+
+In the previous step, our data structure looked like a Graph, and we need to use a special algorithm to find the shortest (the smallest number of stations) way from one point to another. In this case, let's use the Breadth-First search algorithm, which is really common and quite easy to understand.
+
+Objective
+Add a feature to search for a path with the command /route "[line 1]" "[station 1]" "[line 2]" "[station 2]".
+The program should print every passed station and every transition.
+For your updated metro map, you may use the real stations of Prague Metro. Don't forget to get the file with the station names!
+
+For the /route command, transactions between lines should not be considered as moving around the nodes of the graph.
+
+Stage 5/6: The fastest route
+
+Description
+Good job: now the passengers can easily find their way around the metro! However, helping them plan their travel time requires some more effort. We did not take into account one important detail: the distances between the stations vary, which means that the travel time varies as well. We need to find not just the shortest path, but the fastest one. People who are late for work will thank you! You have all the necessary information about the distance between the stations: pay attention to the example!
+
+The kind of graph we need here is called a weighted graph because its edges have "weight", or, in other words, value. To solve this specific problem, the algorithm from the previous stage cannot be used. Dijkstra's algorithm, on the other hand, is a great choice for this task! It is also a common algorithm for finding the shortest path, but it takes into account the weight of the edges. To get a better understanding, you can take a look at a visualization of the algorithm.
+
+Objective
+Add the ability to find the fastest way using the command /fastest-route "[line 1]" "[station 1]" "[line 2]" "[station 2]".
+The program should print the estimate total travel time.
+Upgrade the add station command by adding the travel time.
+Take it into account that transferring from one line to another takes 5 minutes.
+For your updated metro map, you may use the real stations of Prague Metro. Don't forget to get the file with the station names!
+
+For the /route command, transactions between lines should not be considered as moving around the nodes of the graph.
+JSON file with stations will have the following format:
+
+"1": {
+  "name": "Bishops-road",
+  "transfer": [],
+  "time": 2
+},
+"2": {
+  "name": "Edgver road",
+  "transfer": [],
+  "time": 3
+}
+
+...
+From the example above, it takes 2 units to take from the first station to the second one. It also takes 2 units to take from the second station to the first one.
+
+Stage 6/6: Branching
+
+Description
+Your program can help effectively navigate the metro; at least, if the metro lines have one beginning and one end. However, not all metro systems are like that: take a look at the London Underground, for example. Its metro lines are divided into two of even three looped sections. This system is difficult for a person to understand, let alone a computer program.
+
+There's a solution: let's change the presentation of the information. Each station will now have the fields "next", "past", and "transfer" that contain arrays because these fields can hold multiple objects.
+
+Objective
+Add branching.
+Add the possibility of a looped line.
+Line output is not checked in this stage, but you can work on it on your own.
+To test your improved program, use the file with real London Underground stations.
+
+For the /route command, transactions between lines should not be considered as moving around the nodes of the graph.
