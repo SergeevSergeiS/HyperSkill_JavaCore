@@ -1,62 +1,83 @@
 package tictactoe;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        char[] input = scanner.nextLine().toCharArray();
-        System.out.println("---------");
-        for (int i = 0; i < 9; i += 3) {
-            System.out.println(String.format("| %c %c %c |", input[i], input[i+1], input[i+2]));
-        }
-        System.out.println("---------");
+        char[] input = {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '};
+        printer(input);
+        boolean correctInput = false;
         boolean xWins = false;
         boolean oWins = false;
-        int countX = 0;
-        int countO = 0;
-        if (input[0] == input[1] && input[1] == input[2]||input[0] == input[4] && input[4] == input[8]||
-                input[0] == input[3] && input[3] == input[6]) {
-            if (input[0] == 'X') {
-                xWins = true;
-            } else if (input[0] == 'O') {
-                oWins = true;
+        boolean currentTurn = true;
+        int counter = 0;
+        while (!correctInput && counter != 9) {
+            try {
+                int x = scanner.nextInt();
+                int y = scanner.nextInt();
+                if (x < 1 || x > 3 || y < 1 || y > 3) {
+                    System.out.println("Coordinates should be from 1 to 3!");
+                } else if (input[(x - 1) * 3 + (y - 1)] == 'X' || input[(x - 1) * 3 + (y - 1)] == 'O') {
+                    System.out.println("This cell is occupied! Choose another one!");
+                } else {
+                    correctInput = true;
+                    input[(x - 1) * 3 + (y - 1)] = currentTurn ? 'X' : 'O';
+                    currentTurn = !currentTurn;
+                    counter++;
+                }
+            } catch (InputMismatchException ex) {
+                System.out.println("You should enter numbers!");
             }
-        }
-        if (input[4] == input[3] && input[3] == input[5]||input[4] == input[1] && input[1] == input[7]||
-                input[4] == input[2] && input[2] == input[6]) {
-            if (input[4] == 'X') {
-                xWins = true;
-            } else if (input[4] == 'O') {
-                oWins = true;
+            printer(input);
+            if (checker(input, 0, 1, 2)||checker(input, 0, 4, 8)||
+                    checker(input, 0, 3, 6)) {
+                if (input[0] == 'X') {
+                    xWins = true;
+                    break;
+                } else if (input[0] == 'O') {
+                    oWins = true;
+                    break;
+                }
             }
-        }
-        if (input[8] == input[6] && input[6] == input[7]||input[8] == input[5] && input[5] == input[2]) {
-            if (input[8] == 'X') {
-                xWins = true;
-            } else if (input[8] == 'O') {
-                oWins = true;
+            if (checker(input, 3, 4, 5)||checker(input, 1, 4, 7)||
+                    checker(input, 2, 4, 6)) {
+                if (input[4] == 'X') {
+                    xWins = true;
+                    break;
+                } else if (input[4] == 'O') {
+                    oWins = true;
+                    break;
+                }
             }
-        }
-        for (char element : input) {
-            if (element == 'X') {
-                countX++;
-            } else if (element == 'O') {
-                countO++;
+            if (checker(input, 6, 7, 8)||checker(input, 2, 5, 8)) {
+                if (input[8] == 'X') {
+                    xWins = true;
+                    break;
+                } else if (input[8] == 'O') {
+                    oWins = true;
+                    break;
+                }
             }
+            correctInput = false;
         }
-        if (xWins && oWins || Math.abs(countO - countX) > 1) {
-            System.out.println("Impossible");
-        } else if (xWins) {
-            System.out.println("X wins");
-        } else if (oWins) {
-            System.out.println("O wins");
+        if (counter == 9 && !xWins && !oWins) {
+            System.out.println("Draw");
         } else {
-            if (countO + countX < 9) {
-                System.out.println("Game not finished");
-            } else {
-                System.out.println("Draw");
-            }
+            System.out.println(xWins ? "X wins" : "O wins");
         }
+    }
+
+    static void printer(char[] input) {
+        System.out.println("---------");
+        for (int i = 0; i < 9; i += 3) {
+            System.out.println(String.format("| %c %c %c |", input[i], input[i + 1], input[i + 2]));
+        }
+        System.out.println("---------");
+    }
+
+    static boolean checker(char[] input, int pos1, int pos2, int pos3) {
+        return input[pos1] == input[pos2] && input[pos2] == input[pos3];
     }
 }
