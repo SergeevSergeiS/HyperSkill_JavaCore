@@ -14,6 +14,7 @@ public class CoffeeMachine {
     private static void startMachine() {
         System.out.println("Starting to make a coffee");
     }
+    
     private static void grindBeans() {
         System.out.println("Grinding coffee beans");
     }
