@@ -1,0 +1,47 @@
+Stage 1/4: A needle in the hay
+
+Description
+Have you ever had to use one of those 2000+ page phone books full of various organizations and people's names, written in a small font and with multiple columns on each page? Finding the information you need in such books can be an ordeal. In fact, even computers struggle to search through the millions of entries in a directory.
+
+In this project, you will create a phone book, implementing several algorithms, and comparing their efficiency when using a big dataset.
+
+For this, you will need to download the file directory.txt that contains the phone numbers of over a million people in multiple cities.
+
+At this stage, you should implement the simplest possible search to find the numbers of a few people whose names are listed in the file find.txt.
+
+It takes a time to find all the records from the big file. We recommend you manually test your program with the simplified data: small_directory.txt and small_find.txt. But to pass all the tests you have to work with the big files above.
+
+Note how long it takes you to do this when using a linear search so that you can compare results with other search methods.
+
+To measure the time difference, you can use System.currentTimeMillis().
+
+Also notice that you don't need to read the file "directory.txt" again and again after each query. You should load all lines into memory and measure only the search process.
+
+Stage 2/4: Jumping bubbles
+
+Description
+You have to iterate over each element of the number list every time you want to find someone's number. This is the only way to search if your list contains unordered data. Any number can be anywhere on the list, so you have to check every element.
+
+At this stage, you should sort the list of numbers alphabetically by the owner’s name. Sort the list using the bubble sort algorithm and search in the list using the jump search algorithm.
+
+After sorting, search for 500 phone numbers using the list from the previous stage. Note how long it takes to sort the list, and also measure the time the program spends searching. Don't include the sorting time in the searching time, because the list of numbers stays sorted after every search request. If you want to save the sorted list into the file so you don’t have to sort it again, do not override the file that contains the unsorted list of phone numbers. This file will also be required in the next stage.
+
+If the sorting process takes too long (more than 10 times longer than all 500 iterations of the linear search), you should stop sorting and use the linear search. Look at the second example to see what you need to output.
+
+Stage 3/4: Need for speed
+
+Description
+Let's use faster methods to sort the list of numbers and to search in the list.
+
+As in the previous stage, you should first sort the list of phone numbers by the owner’s name and then search for the numbers of the 500 people from the list given in the first stage. Remember: to get decent and comparable results, you should put all the algorithms in the same initial conditions.
+
+For sorting, use the quick sort algorithm, and for searching, use the binary search algorithm.
+
+Stage 4/4: Instant search
+
+Description
+The search is pretty fast, but is it possible to come up with something even faster?
+
+In the previous stage, you prepared the data using an algorithm with a complexity of O(n log n) and found the data using an algorithm with a complexity of O(log n). At this stage, you will implement faster data preparation and a faster search. The preparation will have a complexity of O(n), and the search will have a complexity of O(1). A hash table will help you with this.
+
+You need to add all the elements to the hash table and then find the necessary phone numbers, as in the previous stages. Since the hash table is filled once, you need to measure the hash table creation time separately (just like you did with sorting in the previous stage).
