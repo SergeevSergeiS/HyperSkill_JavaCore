@@ -1,0 +1,114 @@
+Stage 1/5: Lay the groundwork
+
+Description
+Minesweeper is a game of logic where the player is presented with a field full of hidden mines. The goal is to mark the positions of all mines without setting any of them off. It's not a game of wild guessing: it offers hints showing the number of mines around each cell. One wrong move, and game over!
+
+Objective
+Your first step is easy: you need to output some state of the minefield.
+
+Set the minefield size and place any number of mines you want on it. At this point, all the mines are there in plain sight – we are not going to hide them from the player just yet.
+
+You can use any character you want to represent mines and safe cells at this step. Later on, we will use X for mines and . for safe cells.
+
+Stage 2/5: Flexible mines
+
+Description
+It's no fun when the field has the same setup every time and you know where all the mines are located. Let's generate a random configuration every time the player wants to play the game.
+
+To improve the program, we need to let the player choose how many mines they want on the field. The player needs to input the number of mines they want with their keyboard.
+
+Objectives
+Your program should ask the player to define the number of mines to add to a 9x9 field with the message "How many mines do you want on the field?". It should then use the input to initialize the field and display it with the mines. At this point, the mines are still visible to the player; you will hide them later.
+
+Make sure to use the following marking symbols:
+
+X for mines
+. for safe cells
+
+Stage 3/5: Look around you
+
+Description
+The player needs hints to be able to win, and we want them to have a chance to win! Let's show the number of mines around the empty cells so that our players have something to work with.
+
+Objectives
+As in the previous step, you need to initialize the field with mines. Then, calculate how many mines there are around each empty cell. Check 8 cells if the current cell is in the middle of the field, 5 cells if it's on the side, and 3 cells if it's in the corner.
+
+If there are mines around the cell, display the number of mines (from 1 to 8) instead of the symbol representing an empty cell. The symbols for empty cells and mines stay the same.
+
+Check all the possibilities carefully.
+
+Stage 4/5: Prepare for battle
+
+Description
+We managed to create the minefield and fill it with clues: now it's time to play! Let's give our player the opportunity to guess where the mines are with the help of our hints.
+
+All the numbers are still shown to the player, but now the mines are not. To win, the player must find all the mines on the field by marking them.
+
+Update the field input and add the coordinate grid like in the examples so that the player can mark cells by entering their coordinates.
+
+Objectives
+Your upgraded program should meet the following requirements:
+
+After initializing the field, all the numbers are shown to the player, but not the positions of the mines.
+
+The player sees the message “Set/delete mine marks (x and y coordinates):” and enters two numbers as coordinates on the field.
+
+The user input is treated according to the rules:
+
+If the player enters the coordinates of a non-marked cell, the program marks the cell, which means that the player thinks a mine is located there.
+
+If the player enters the coordinates of a cell with a number, the program should print the message “There is a number here!” and ask the player again without printing the minefield, since cells with numbers are guaranteed to be free of mines.
+
+If the player enters the coordinates of a marked cell, the cell becomes unmarked. This is necessary because the game ends only if all the marks are correct, but the player can mark more cells than there are mines.
+
+After successfully marking or unmarking a cell, the new minefield state is printed. The symbol . is used to represent non-marked cells, and * is for marked ones. The prompt for the player's next move is printed until the game is finished.
+
+When the player marks all the mines correctly without marking any empty cells, they win and the game ends. If the player has marked extra cells that do not contain mines, they continue playing. After clearing all the excess mine marks, the player wins. Print the message “Congratulations! You found all the mines!” after the final field state.
+
+Stage 5/5: Battle!
+
+Description
+In this stage, you will upgrade your program to act just like the original Minesweeper game! We won't show all the hints from the beginning anymore, but we will allow the player to explore the minefield by themselves, which is much more challenging and fun.
+
+The game starts with an unexplored minefield that has a user-defined number of mines.
+
+The player can:
+
+Mark unexplored cells as cells that potentially have a mine, and also remove those marks. Any empty cell can be marked, not just the cells that contain a mine. The mark is removed by marking the previously marked cell.
+
+Explore a cell if they think it does not contain a mine.
+
+There are three possibilities after exploring a cell:
+
+If the cell is empty and has no mines around, all the cells around it, including the marked ones, can be explored, and it should be done automatically. Also, if next to the explored cell there is another empty one with no mines around, all the cells around it should be explored as well, and so on, until no more can be explored automatically.
+
+If a cell is empty and has mines around it, only that cell is explored, revealing a number of mines around it.
+
+If the explored cell contains a mine, the game ends and the player loses.
+
+There are two possible ways to win:
+
+Marking all the cells that have mines correctly.
+
+Opening all the safe cells so that only those with unexplored mines are left.
+
+Objectives
+In this final stage, your program should contain the following additional functionality:
+
+Print the current state of the minefield starting with all unexplored cells at the beginning, ask the player for their next move with the message Set/unset mine marks or claim a cell as free:, treat the player's move according to the rules, and print the new minefield state. Ask for the player's next move until the player wins or steps on a mine. The player's input contains a pair of cell coordinates and a command: mine to mark or unmark a cell, free to explore a cell.
+
+If the player explores a mine, print the field in its current state, with mines shown as X symbols. After that, output the message You stepped on a mine and failed!.
+
+Generate mines like in the original game: the first cell explored with the free command cannot be a mine; it should always be empty. You can achieve this in many ways – it's up to you.
+
+Use the following symbols to represent each cell's state:
+
+. as unexplored cells
+
+/ as explored free cells without mines around it
+
+Numbers from 1 to 8 as explored free cells with 1 to 8 mines around them, respectively
+
+X as mines
+
+* as unexplored marked cells
